@@ -1,12 +1,13 @@
 #include "CSPConstraint.h"
 
-CSPConstraint::CSPConstraint(string id_, CSPVariable variable){
+CSPConstraint::CSPConstraint(string id_, CSPVariable* variable){
   id = id_;
   scope.push_back(variable);
 
 }
 
-CSPConstraint::CSPConstraint(string id_, vector<CSPVariable> variables){
+CSPConstraint::CSPConstraint(string id_, vector<CSPVariable*> variables){
+  id = id_;
   scope = variables;
 
 }
@@ -76,7 +77,7 @@ int CSPConstraint::getNumberTuples(){
   return tuples.size();
 }
 
-vector<CSPVariable> CSPConstraint::getScopeVariables(){
+vector<CSPVariable*> CSPConstraint::getScopeVariables(){
   return scope;
 }
 /*
@@ -91,9 +92,9 @@ bool CSPConstraint::inScope(CSPVariable variable){
 }
 */
 bool CSPConstraint::inScope(string variableId){
-  vector<CSPVariable>::iterator iter;
+  vector<CSPVariable*>::iterator iter;
   for(iter = scope.begin(); iter != scope.end(); ++iter){
-    if((*iter).getId() == variableId){
+    if((*iter)->getId() == variableId){
       return true;
     }
   }

@@ -2513,4 +2513,3 @@ namespace XCSP3Core {
 }
 
 #endif //COSOCO_XCSP3CORECALLBACKS_H
-

@@ -14,13 +14,13 @@ using std::vector;
 class CSPConstraint{
 private:
   string id;
-  vector<CSPVariable> scope;
+  vector<CSPVariable*> scope;
   vector<vector<int>> tuples;
 
 public:
   // Either way, internal representation is through a vector:
-  CSPConstraint(string id, CSPVariable variable);
-  CSPConstraint(string id, vector<CSPVariable>  variables);
+  CSPConstraint(string id, CSPVariable *variable);
+  CSPConstraint(string id, vector<CSPVariable*>  variables);
 
   // Returns string id:
   string getId();
@@ -42,7 +42,7 @@ public:
   int getNumberTuples();
 
   // Get variables or variable id's in constraint:
-  vector<CSPVariable> getScopeVariables();
+  vector<CSPVariable*> getScopeVariables();
   //vector<string> getScopeIds();
 
   // Check variables is in scope:

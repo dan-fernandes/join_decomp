@@ -1,5 +1,5 @@
 #include "XCSP3CoreParser.h"
-#include "XCSP3JoinDecompCallbacks.h"
+//#include "XCSP3JoinDecompCallbacks.h"
 
 
 using namespace XCSP3Core;

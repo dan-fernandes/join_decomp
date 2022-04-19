@@ -33,12 +33,14 @@ TEST_CASE("constraints"){
   CSPVariable d_v_1("d_v_1", d);
 
   // Test single-variable constructor
-  CSPConstraint c_v_1("c_v_1", r_v_1);
+  CSPConstraint c_v_1("c_v_1", &r_v_1);
   vector<vector<int>> tuples_1 = {{1}, {3}, {7}, {8}, {13}};
   vector<vector<int>> full_tuple_1 = {{12},{1},{3},{7},{8},{13}};
   vector<int> test_tuple_1 = {7};
   c_v_1.addTuple({12});
+  // This is an error case:
   c_v_1.addTuple({12,13});
+  // ^^ should give warning, and be ignored
   CHECK(c_v_1.isSatisfied(12) == true);
   CHECK(c_v_1.isSatisfied(13) == false);
   c_v_1.addTuples(tuples_1);
@@ -63,18 +65,41 @@ TEST_CASE("constraints"){
 
 
   //Test multi-variable constructor:
-  vector<CSPVariable> v = {r_v_1, d_v_1};
+  vector<CSPVariable*> v = {&r_v_1, &d_v_1};
   CSPConstraint c_vs_1("c_vs_1", v);
   vector<vector<int>> tuples_2 = {{1, 6}, {3,14}, {7,2}, {8,2}, {13,1}};
-  vector<int> test_tuple_2 = {13,7};
+
 
   c_vs_1.addTuples(tuples_2);
   c_vs_1.addTuple({13,7});
-  CHECK(c_vs_1.isSatisfied({1,6}) == true);
-  CHECK(c_vs_1.getTuple(5) == test_tuple_2);
 
+  CHECK(c_vs_1.getId() == "c_vs_1");
+  CHECK(c_vs_1.isSatisfied({1,6}) == true);
+  CHECK(c_vs_1.isSatisfied({1,7}) == false);
+
+  vector<int> test_tuple_2 = {8,2};
+  vector<int> test_tuple_3 = {13,7};
+
+  CHECK(c_vs_1.getTuple(3) == test_tuple_2);
+  CHECK(c_vs_1.getTuple(5) == test_tuple_3);
+
+
+  vector<vector<int>> full_tuple_2 = {{1,6},{3,14},{7,2},{8,2},{13,1},{13,7}};
+  CHECK(c_vs_1.getTuples() == full_tuple_2);
+
+  CHECK(c_vs_1.getNumberTuples() == 6);
+
+  CHECK(c_vs_1.inScope("r_v_1") == true);
+  CHECK(c_vs_1.inScope("d_v_1") == true);
+  CHECK(c_vs_1.inScope("sfjiodsj") == false);
 }
 
 TEST_CASE("join_decomp_builder"){
-  JoinDecompBuilder jdb();
+  JoinDecompBuilder jdb;
+
+  jdb.loadXCSP("../samples/aim-50-1-6-sat-1.xml");
+
+  CHECK(jdb.getNumVariables() == 50);
+  
+
 }
