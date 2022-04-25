@@ -57,8 +57,9 @@ namespace XCSP3Core {
 
       // adds to instanceConstraints vector, from non-unique id, xvars, tuples:
       void addXVarConstraint(string id, vector<XVariable*> constrVariables, vector<vector<int>> tuples);
-      void addXVarConstraint(string id, vector<CSPVariable*> constrVariables, vector<vector<int>> tuples);
+      // void addXVarConstraint(string id, vector<CSPVariable*> constrVariables, vector<vector<int>> tuples);
 
+      void invertTuples(vector<XVariable*> constrVariables, vector<vector<int>> tuples);
     public:
         XCSP3JoinDecompCallbacks(vector<CSPVariable> * instanceVariables_, vector<CSPConstraint> * instanceConstraints_);
 
@@ -93,8 +94,8 @@ namespace XCSP3Core {
         void buildConstraintExtensionAs(string id, vector<XVariable *> list, bool support, bool hasStar) override;
 
     //     void buildAnnotationDecision(vector<XVariable*> &list) override;
-    //     bool canonize;
-    // };
+         bool canonize;
+    };
 
 
 }

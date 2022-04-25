@@ -97,14 +97,14 @@ public:
 
 	// Copy Constructor for hypertreeSharedPtr
 	std::shared_ptr<Hypertree> clone() const;
-	
+
 	// Writes hypertree to GML format file
 	void outputToGML(const string &cNameOfFile) const;
     
-	// Inserts a node into the chi-set 
+	// Inserts a node into the chi-set
 	void insChi(const VertexSharedPtr &Vertex);
 
-	// Inserts an edge into the lambda-set 
+	// Inserts an edge into the lambda-set
 	void insLambda(const HyperedgeSharedPtr &Edge);
 
 	// Sets pointer to the parent node
@@ -121,7 +121,7 @@ public:
 
 	// Removes all pointers to children
 	void remChildren(bool SetParent = true, const std::shared_ptr<Hypertree> &NewParent = nullptr);
-	
+
 	// Inserts a pointer into the pointer set;
 	// these pointers can be used for the construction of hypertrees
 	void insPointer(void *Ptr);
@@ -149,11 +149,11 @@ public:
 	// the actual tree node
 	std::shared_ptr<Hypertree> getCutNode();
 
-	// Returns the tree node within the subtree rooted at the 
+	// Returns the tree node within the subtree rooted at the
 	// actual tree node, whose pointer list contains Ptr
 	Hypertree *getHTNode(void *Ptr);
 
-	// Returns the tree node within the subtree rooted at the 
+	// Returns the tree node within the subtree rooted at the
 	// actual tree node, whose ID list contains iID
 	Hypertree *getHTNode(int iID);
 
@@ -163,11 +163,11 @@ public:
 	// Returns true iff the hypertree node does not have a parent
 	bool isRoot() const;
 
-	// Returns the hypertreewidth, i.e., the maximum number of elements 
+	// Returns the hypertreewidth, i.e., the maximum number of elements
 	// in the lambda-set over all nodes in the subtree
 	size_t getHTreeWidth() const;
 
-	// Returns the treewidth, i.e., the maximum number of elements 
+	// Returns the treewidth, i.e., the maximum number of elements
 	// in the chi-set over all nodes in the subtree
 	size_t getTreeWidth() const;
 
@@ -221,7 +221,7 @@ public:
 
 	// Reduces the labellings in the lambda-sets
 	void reduceLambda();
-	
+
 	// Sets the chi-sets based on the lambda-sets
 	void setChi(bool bStrict = true);
 
@@ -251,10 +251,9 @@ public:
 	std::shared_ptr<const Hypertree> checkCond4() const;
 
 	bool verify(bool hd = true, ostream &out = cout);
-	
+
 };
 
 using HypertreeSharedPtr = std::shared_ptr<Hypertree>;
 
 #endif // !defined(CLS_HYPERTREE)
-

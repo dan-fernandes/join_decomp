@@ -10,7 +10,16 @@
 #include "JoinDecomp.h"
 #include "XCSP3CoreParser.h"
 
+#include "Globals.h"
+#include "Hypergraph.h"
+#include "Superedge.h"
+#include "Hyperedge.h"
+#include "Hypertree.h"
+#include "DetKDecomp.h"
+
+
 using std::string;
+using std::map;
 //using namespace XCSP3Core;
 
 class JoinDecompBuilder{
@@ -18,6 +27,9 @@ class JoinDecompBuilder{
 private:
   vector<CSPVariable> variables;
   vector<CSPConstraint> constraints;
+
+
+
 
 
 public:
@@ -30,7 +42,24 @@ public:
   int getNumVariables();
   int getNumConstraints();
 
+
   int loadXCSP(string filepath);
+
+  void buildHG(HypergraphSharedPtr HG);
+
+  void getHTNodeConstraints(vector<CSPConstraint*> * constrVec, HypertreeSharedPtr HT);
+
+  JoinBinaryNode* computeSubJ(map<JoinBinaryNode*, CSPConstraint*>* q, JoinBinaryNode* root, vector<CSPConstraint*> constrVec);
+
+  JoinBinaryNode* cleanJD(map<JoinBinaryNode*, CSPConstraint*>* q, JoinBinaryNode* root);
+
+  // Converts from HT ot JD:
+  JoinBinaryNode* convertHT(map<JoinBinaryNode*, CSPConstraint*> * q, HypertreeSharedPtr HT);
+
+  // Takes all nodes in JoinBinaryNode's tempChildren and binarises them
+  // In here rather than JoinBinaryNode to allow heuristic methods of bianrisation
+  void binarise(JoinBinaryNode * root);
+
   void buildJoinDecomp(JoinDecomp * jd);
 
   // void addVariable(string id, int minVal, int maxVal);

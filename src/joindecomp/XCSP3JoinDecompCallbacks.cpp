@@ -10,37 +10,37 @@ XCSP3JoinDecompCallbacks::XCSP3JoinDecompCallbacks(vector<CSPVariable> * instanc
 }
 
 
-template<class T>
-void displayList(vector<T> &list, string separator = " ") {
-    if(list.size() > 8) {
-        for(int i = 0; i < 3; i++)
-            cout << list[i] << separator;
-        cout << " ... ";
-        for(unsigned int i = list.size() - 4; i < list.size(); i++)
-            cout << list[i] << separator;
-        cout << endl;
-        return;
-    }
-    for(unsigned int i = 0; i < list.size(); i++)
-        cout << list[i] << separator;
-    cout << endl;
-}
-
-
-void displayList(vector<XVariable *> &list, string separator = " ") {
-    if(list.size() > 8) {
-        for(int i = 0; i < 3; i++)
-            cout << list[i]->id << separator;
-        cout << " ... ";
-        for(unsigned int i = list.size() - 4; i < list.size(); i++)
-            cout << list[i]->id << separator;
-        cout << endl;
-        return;
-    }
-    for(unsigned int i = 0; i < list.size(); i++)
-        cout << list[i]->id << separator;
-    cout << endl;
-}
+// template<class T>
+// void displayList(vector<T> &list, string separator = " ") {
+//     if(list.size() > 8) {
+//         for(int i = 0; i < 3; i++)
+//             cout << list[i] << separator;
+//         cout << " ... ";
+//         for(unsigned int i = list.size() - 4; i < list.size(); i++)
+//             cout << list[i] << separator;
+//         cout << endl;
+//         return;
+//     }
+//     for(unsigned int i = 0; i < list.size(); i++)
+//         cout << list[i] << separator;
+//     cout << endl;
+// }
+//
+//
+// void displayList(vector<XVariable *> &list, string separator = " ") {
+//     if(list.size() > 8) {
+//         for(int i = 0; i < 3; i++)
+//             cout << list[i]->id << separator;
+//         cout << " ... ";
+//         for(unsigned int i = list.size() - 4; i < list.size(); i++)
+//             cout << list[i]->id << separator;
+//         cout << endl;
+//         return;
+//     }
+//     for(unsigned int i = 0; i < list.size(); i++)
+//         cout << list[i]->id << separator;
+//     cout << endl;
+// }
 
 CSPVariable* XCSP3JoinDecompCallbacks::getInstanceVarById(string id){
   vector<CSPVariable>::iterator iter;
@@ -83,15 +83,29 @@ void XCSP3JoinDecompCallbacks::addXVarConstraint(string id, vector<XVariable*> c
 
 }
 
-void XCSP3JoinDecompCallbacks::addXVarConstraint(string id, vector<CSPVariable*> constrVariables, vector<vector<int>> tuples){
-  string newId = generateId(id);
+// void XCSP3JoinDecompCallbacks::addXVarConstraint(string id, vector<CSPVariable*> constrVariables, vector<vector<int>> tuples){
+//   string newId = generateId(id);
+//
+//   CSPConstraint constr(newId, constrVariables);
+//   constr.addTuples(tuples);
+//   instanceConstraints->push_back(constr);
+//
+// }
 
-  CSPConstraint constr(newId, constrVariables);
-  constr.addTuples(tuples);
-  instanceConstraints->push_back(constr);
+void XCSP3JoinDecompCallbacks::invertTuples(vector<XVariable*> constrVariables, vector<vector<int>> tuples){
+
+  // int tup_num = tuples.size();
+  //
+  // vector<XVariable*>::iterator varIter;
+  // vector<vector<int>>::iterator tupleIter;
+  //
+  // for(varIter = constrVariables.begin(); varIter != constrVariables.end(); ++varIter){
+  //
+  // }
+  std::cerr<<"Warning: conflict extension not supported.\n";
+
 
 }
-
 
 
 void XCSP3JoinDecompCallbacks::beginInstance(InstanceType type) {
@@ -161,6 +175,9 @@ void XCSP3JoinDecompCallbacks::buildConstraintExtension(string id, vector<XVaria
      // cout << "        " << (support ? "support" : "conflict") << " arity: " << list.size() << " nb tuples: " << tuples.size() << " star: " << hasStar << endl;
      // cout << "        ";
      // displayList(list);
+     if(!support){
+       invertTuples(list, tuples);
+     }
 
      addXVarConstraint(id, list, tuples);
 
@@ -179,19 +196,30 @@ void XCSP3JoinDecompCallbacks::buildConstraintExtension(string id, XVariable *va
     list.push_back(variable);
     tuples_.push_back(tuples);
 
+    if(!support){
+      invertTuples(list, tuples_);
+    }
+
+
     addXVarConstraint(id, list, tuples_);
 }
 
 
 // string id, vector<XVariable *> list, bool support, bool hasStar
-void XCSP3JoinDecompCallbacks::buildConstraintExtensionAs(string id, vector<XVariable *> list, bool, bool) {
+void XCSP3JoinDecompCallbacks::buildConstraintExtensionAs(string id, vector<XVariable *> list, bool support, bool) {
     // cout << "\n    extension constraint similar as previous one: " << id << endl;
 
-    addXVarConstraint(id, list, (instanceConstraints->back()).getTuples());
+    vector<vector<int>> tuples = (instanceConstraints->back()).getTuples();
+
+    if(!support){
+      invertTuples(list, tuples);
+    }
+
+    addXVarConstraint(id, list, tuples);
 
 }
-void XCSP3JoinDecompCallbacks::buildAnnotationDecision(vector<XVariable*> &list) {
-    std::cout << "       decision variables" << std::endl<< "       ";
-    displayList(list);
-
-}
+// void XCSP3JoinDecompCallbacks::buildAnnotationDecision(vector<XVariable*> &list) {
+//     std::cout << "       decision variables" << std::endl<< "       ";
+//     displayList(list);
+//
+// }

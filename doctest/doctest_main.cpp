@@ -97,9 +97,18 @@ TEST_CASE("constraints"){
 TEST_CASE("join_decomp_builder"){
   JoinDecompBuilder jdb;
 
-  jdb.loadXCSP("../samples/aim-50-1-6-sat-1.xml");
+  JoinDecomp jd;
 
-  CHECK(jdb.getNumVariables() == 50);
+  jdb.loadXCSP("../samples/MaxCSP-connell.xml");
   
+  CHECK(jdb.getNumVariables() == 13);
+  CHECK(jdb.getNumConstraints() == 15);
+
+  jdb.buildJoinDecomp(&jd);
+
+
+
+
+
 
 }
