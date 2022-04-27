@@ -5,7 +5,7 @@
 
 using std::vector;
 
-class JoinBinaryNode;
+// class JoinBinaryNode;
 
 class JoinBinaryNode{
 private:

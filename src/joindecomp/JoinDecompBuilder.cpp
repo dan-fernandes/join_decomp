@@ -45,14 +45,6 @@ void printJBNTempChildren( JoinBinaryNode * jbn, map<JoinBinaryNode*, CSPConstra
   while(printVec.size() != i){
     curNode = printVec.at(i);
     cout << "curNode: "<<curNode<<" tempChildren: ";
-    // if(curNode->left() != NULL){
-    //   printVec.push_back(curNode->left());
-    //   cout << " leftNode: " << curNode->right();
-    // }
-    // if(curNode->right() != NULL){
-    //   printVec.push_back(curNode->right());
-    //   cout << " rightNode: " << curNode->left();
-    // }
     for(auto temp: curNode->getTempChildren()){
       printVec.push_back(temp);
       cout << ' ' << temp;
@@ -70,11 +62,6 @@ void printJBNTempChildren( JoinBinaryNode * jbn, map<JoinBinaryNode*, CSPConstra
   }
 }
 
-
-JoinDecompBuilder::JoinDecompBuilder(){
-  //parser(&cb);
-
-}
 
 
 int JoinDecompBuilder::getNumVariables(){
@@ -111,7 +98,6 @@ void JoinDecompBuilder::buildHG(HypergraphSharedPtr HG){
       int i = 0;
 
       for(vector<CSPVariable>::iterator varIter2 = variables.begin(); varIter2 != variables.end(); ++varIter2){
-        //cout<<"scope foo\n";
         if((varIter2)->getId() == (*scopeIter)->getId()){
           break;
         }
@@ -130,21 +116,16 @@ void JoinDecompBuilder::buildHG(HypergraphSharedPtr HG){
 
 void JoinDecompBuilder::getHTNodeConstraints(vector<CSPConstraint*> * constrVec, HypertreeSharedPtr HT){
   for(auto iter:HT->allLambda()){
-    // cout<<"iter: "<<iter<<'\n';
     vector<CSPConstraint>::iterator constrIter;
-    // for(auto constrIter:constraints){
     for(constrIter = constraints.begin(); constrIter != constraints.end(); ++constrIter){
-      // cout<<"constraint: "<<constrIter<<"\n";
       if(constrIter->getScopeSize() == iter->getNbrOfVertices()){
         bool constrFlag = true;
         for(auto iter2:iter->allVertices()){
-          // cout<<(constrIter.inScope(iter2->getName()))<<'\n';
           if(!constrIter->inScope(iter2->getName())){
             constrFlag = false;
           }
         }
         if(constrFlag){
-          // cout<<"Pushed constraint "<< &(*constrIter) <<" to constrVec\n";
           constrVec->push_back(&(*constrIter));
         }
       }
@@ -152,13 +133,9 @@ void JoinDecompBuilder::getHTNodeConstraints(vector<CSPConstraint*> * constrVec,
   }
 }
 
-// JoinBinaryNode* JoinDecompBuilder::computeSubJ(map<CSPConstraint, JoinBinaryNode*> q, HypertreeSharedPtr HT){
+
 JoinBinaryNode* JoinDecompBuilder::computeSubJ(map<JoinBinaryNode*, CSPConstraint*>* q, JoinBinaryNode* root, vector<CSPConstraint*> constrVec){
-  cout << "computeSubJ call: ";
-  for(auto c: constrVec){
-    cout << c->getId() << ' ';
-  }
-  cout <<'\n';
+
 
   if(constrVec.size()>1){
     JoinBinaryNode* childLeft = new JoinBinaryNode;
@@ -180,19 +157,10 @@ JoinBinaryNode* JoinDecompBuilder::computeSubJ(map<JoinBinaryNode*, CSPConstrain
 
     for(auto c: (*q)){
       if( c.second == constrVec.at(0)){
-        cout << "CONSTR ALREADY COVERED";
         return NULL;
       }
     }
 
-    // q.insert( (constrVec.at(0)), root );
-
-    if(q->find(root) != q->end()){
-      cout << "REINSERTATION \n";
-    }
-    else{
-      cout <<"NO RESINSERTATION \n";
-    }
 
     q->insert( pair<JoinBinaryNode*, CSPConstraint*>(root, constrVec.at(0)));
   }
@@ -212,16 +180,13 @@ JoinBinaryNode* JoinDecompBuilder::cleanJD(map<JoinBinaryNode*, CSPConstraint*>*
   if(root->right() != NULL){
     root->setRight(cleanJD(q,root->right()));
   }
-  cout << "at "<<root<<" q->find(root) != q->end(): "<<(q->find(root) != q->end())<< " left(): " <<root->left() << " right(): "<<root->right();
+
   if((root->left() == NULL)&(root->right() == NULL)){
     if(q->find(root) == q->end()){
-      cout << " NULLIFIED";
-      cout <<'\n';
       return NULL;
     }
 
   }
-  cout <<'\n';
   return root;
 
 }
@@ -251,7 +216,6 @@ JoinBinaryNode* JoinDecompBuilder::convertHT(map<JoinBinaryNode*, CSPConstraint*
 void JoinDecompBuilder::binarise(JoinBinaryNode * root){
 
   if(root == NULL){
-    cout <<"NULL\n";
     return;
   }
 
@@ -259,31 +223,22 @@ void JoinDecompBuilder::binarise(JoinBinaryNode * root){
   root->setRight(NULL);
 
   vector<JoinBinaryNode*> tempChildren = root->getTempChildren();
-  cout << "tempChildren: ";
   for(auto iter:tempChildren){
-    cout << ' ' <<iter;
   }
-  cout << '\n';
 
   root->clearTempChildren();
   if(tempChildren.size() > 2){
-    cout << ">1 temp child ";
     JoinBinaryNode * child1 = new JoinBinaryNode;
 
     int mid = ceil(tempChildren.size()/2);
 
     vector<JoinBinaryNode*> popped(tempChildren.begin(), (tempChildren.begin() + mid));
     vector<JoinBinaryNode*> remaining((tempChildren.begin() + mid), tempChildren.end());
-    cout << "Popped: ";
     for(auto iter: popped){
-      cout << ' ' << iter;
     }
 
-    cout << " Remaining: ";
     for(auto iter: remaining){
-      cout << ' ' << iter;
     }
-    cout <<'\n';
 
 
     child1->setTempChildren(popped);
@@ -302,77 +257,38 @@ void JoinDecompBuilder::binarise(JoinBinaryNode * root){
 
   }
   else if(tempChildren.size() == 2){
-    cout << "Two temp children\n";
     root->setLeft(tempChildren.at(0));
     root->setRight(tempChildren.at(1));
   }
   else if(tempChildren.size() == 1){
-    cout <<"One temp child\n";
     root->setLeft(tempChildren.at(0));
   }
-  cout <<"recur left:\n";
   binarise(root->left());
-  cout <<"recur right:\n";
   binarise(root->right());
-  cout <<"fin\n";
 
 }
 
 void JoinDecompBuilder::buildJoinDecomp(JoinDecomp *jd){
-  // Hypergraph hg;
   HypergraphSharedPtr HG = make_shared<Hypergraph>();
   HypertreeSharedPtr HT;
   buildHG(HG);
 
   //DELETE THIS:
-  int maxIWidth = 10;
+  int maxIWidth = 100;
   //DELETE IT
 
   HT = NULL;
   int iWidth = 0;
   while( (HT == NULL) & ((iWidth <= maxIWidth)|(maxIWidth==-1))){
-    //cout<<"builHTLoopFoo\n";
     iWidth++;
     DetKDecomp Decomp(HG, iWidth, false);
     HT = Decomp.buildHypertree();
-    cout << (HT == NULL) << " and " << (((iWidth < maxIWidth)|(maxIWidth==-1))) <<'\n';
   }
-
-  //HT = decompK(HG, K);
-  // cout << "Printing to GML\n";
-  // HT->outputToGML("TEST_OUT.gml");
-
-  cout << "constraints.size(): "<<constraints.size()<<"\n";
-
   map<JoinBinaryNode*, CSPConstraint*> * q = new map<JoinBinaryNode*, CSPConstraint*>;
 
-  cout << "converting HT..\n\n";
   JoinBinaryNode* jdn = convertHT(q, HT);
 
-
-  printJBNTempChildren(jdn, *q);
-  cout << "BINARISING..\n\n";
   binarise(jdn);
 
-  printJBN(jdn, *q);
-  cout <<"CLEANING..\n\n";
   cleanJD(q,jdn);
-
-  printJBN(jdn, *q);
-
-  // cout << q->at(jdn) << '\n';
-
-  cout << "MAP PRINT: \n\n";
-
-  cout <<" q size: "<<q->size() << '\n';
-
-  map<JoinBinaryNode*, CSPConstraint*>::iterator mapIter;
-  for(mapIter = q->begin(); mapIter != q->end(); ++mapIter){
-    cout << mapIter->first << " " << mapIter->second->getId();
-    for(auto vIter: mapIter->second->getScopeVariables()){
-      cout << ' ' << vIter->getId();
-    }
-    cout << '\n';
-  }
-
 }

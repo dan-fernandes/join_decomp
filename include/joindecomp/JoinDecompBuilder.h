@@ -9,6 +9,7 @@
 #include "XCSP3JoinDecompCallbacks.h"
 #include "JoinDecomp.h"
 #include "XCSP3CoreParser.h"
+#include "JoinBinaryNode.h"
 
 #include "Globals.h"
 #include "Hypergraph.h"
@@ -33,11 +34,6 @@ private:
 
 
 public:
-  //
-  // vector<CSPVariable> variables;
-  // vector<CSPConstraint> constraints;
-
-  JoinDecompBuilder();
 
   int getNumVariables();
   int getNumConstraints();
@@ -61,12 +57,6 @@ public:
   void binarise(JoinBinaryNode * root);
 
   void buildJoinDecomp(JoinDecomp * jd);
-
-  // void addVariable(string id, int minVal, int maxVal);
-  // void addVariables(string id, vector<int> values);
-  //
-  // void addConstraint(string id, string varId);
-  // void addConstraints(string id, vector<string> varIds);
 };
 
 
