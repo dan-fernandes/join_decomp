@@ -31,15 +31,6 @@
 #include "XCSP3Variable.h"
 #include "CSPVariable.h"
 #include "CSPConstraint.h"
-/**
- * This is an example that prints useful informations of a XCSP3 instance.
- * You need to create your own class and to override functions of the callback.
- * We suggest to make a map between XVariable and your own variables in order to
- * facilitate the constructions of constraints.
- *
- * see main.cc to show declaration of the parser
- *
- */
 
 
 namespace XCSP3Core {

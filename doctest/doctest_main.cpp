@@ -184,18 +184,74 @@ TEST_CASE("basic_join_decomp"){
   vector<vector<int>> test_t_5 = {{1,2}};
   CHECK(jd_0.getTuples() == test_t_5);
 
+  CHECK(jd_0.hashTupI() == 3);
+  CHECK(jd_4.hashTupI() == 2);
+
+}
+
+TEST_CASE("joinwidth"){
+
+    JoinDecomp jd_0;
+
+    JoinDecomp jd_1;
+    JoinDecomp jd_2;
+
+    JoinDecomp jd_3;
+    JoinDecomp jd_4;
+    JoinDecomp jd_5;
+
+    jd_0.setChildLeft(&jd_1);
+    jd_0.setChildRight(&jd_2);
+    jd_1.setChildLeft(&jd_3);
+    jd_1.setChildRight(&jd_4);
+    jd_2.setChildLeft(&jd_5);
+
+    jd_0.setRoot(&jd_0);
+    jd_1.setRoot(&jd_0);
+    jd_2.setRoot(&jd_0);
+    jd_3.setRoot(&jd_0);
+    jd_4.setRoot(&jd_0);
+    jd_5.setRoot(&jd_0);
+
+    vector<string> vars_jd_3 = {"A","B"};
+    vector<vector<int>> tuples_jd_3 = {{0,1},{1,0},{1,1}};
+
+
+    vector<string> vars_jd_4 = {"B","C"};
+    vector<vector<int>> tuples_jd_4 = {{1,2},{2,2}};
+
+    vector<string> vars_jd_5 = {"A", "C", "D"};
+    vector<vector<int>> tuples_jd_5 = {{1,2,3},{1,3,4}};
+
+    jd_3.setVariables(vars_jd_3);
+    jd_3.setTuples(tuples_jd_3);
+
+    jd_4.setVariables(vars_jd_4);
+    jd_4.setTuples(tuples_jd_4);
+
+    jd_5.setVariables(vars_jd_5);
+    jd_5.setTuples(tuples_jd_5);
+
+    jd_0.solve();
+    CHECK(jd_0.joinwidth() == 0);
+
 }
 
 TEST_CASE("join_decomp_builder"){
   JoinDecompBuilder jdb;
 
-  JoinDecomp jd;
+  JoinDecomp* jd;
 
-  jdb.loadXCSP("../samples/MaxCSP-connell.xml");
+  jdb.loadXCSP("../samples/example.xml");
 
-  CHECK(jdb.getNumVariables() == 13);
-  CHECK(jdb.getNumConstraints() == 15);
+  CHECK(jdb.getNumVariables() == 10);
+  CHECK(jdb.getNumConstraints() == 3);
 
-  jdb.buildJoinDecomp(&jd);
+  jd = jdb.buildJoinDecomp();
 
+
+  vector<vector<int>> test_t_1 = {{2,3,4,5},{3,1,4,9}};
+  CHECK(jd->getTuples() == test_t_1);
+
+  CHECK(jd->getRoot() == jd);
 }

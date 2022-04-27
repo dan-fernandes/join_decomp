@@ -268,7 +268,36 @@ void JoinDecompBuilder::binarise(JoinBinaryNode * root){
 
 }
 
-void JoinDecompBuilder::buildJoinDecomp(JoinDecomp *jd){
+JoinDecomp* JoinDecompBuilder::convJBN(map<JoinBinaryNode*, CSPConstraint*> * q, JoinBinaryNode* jbn){
+  JoinDecomp * jd = new JoinDecomp();
+
+  // if(root == NULL){
+  //   root = jd;
+  // }
+  // jd->setRoot(root);
+
+  if(jbn->left() != NULL){
+    jd->setChildLeft(convJBN(q,jbn->left()));
+    // jd->left()->setRoot(jd->getRoot());
+  }
+  if(jbn->right() != NULL){
+    jd->setChildRight(convJBN(q,jbn->right()));
+    // jd->right()->setRoot(jd->getRoot());
+  }
+
+  if(q->find(jbn) != q->end()){
+    vector<string> vars;
+    for(auto iter:q->at(jbn)->getScopeVariables()){
+      vars.push_back(iter->getId());
+    }
+    jd->setVariables(vars);
+    jd->setTuples(q->at(jbn)->getTuples());
+  }
+
+  return jd;
+}
+
+JoinDecomp* JoinDecompBuilder::buildJoinDecomp(){
   HypergraphSharedPtr HG = make_shared<Hypergraph>();
   HypertreeSharedPtr HT;
   buildHG(HG);
@@ -291,4 +320,8 @@ void JoinDecompBuilder::buildJoinDecomp(JoinDecomp *jd){
   binarise(jdn);
 
   cleanJD(q,jdn);
+
+  JoinDecomp * jd = convJBN(q, jdn);
+
+  return jd;
 }

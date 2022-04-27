@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <cmath>
 
 #include "CSPConstraint.h"
 
@@ -12,14 +13,18 @@ using std::vector;
 using std::string;
 using std::map;
 
+using std::log;
+
 class JoinDecomp{
 private:
-  JoinDecomp* root = NULL;
+  JoinDecomp* root = this;
   JoinDecomp* childLeft = NULL;
   JoinDecomp* childRight = NULL;
 
   vector<string> variables;
   vector<vector<int>> tuples;
+
+  int ogTupLen = 0;
 
 
 public:
@@ -59,6 +64,16 @@ public:
   void prune();
 
   void solve();
+
+  // returns size of biggest tuple in JD rooted at this node:
+  int hashTupI();
+
+  // returns node's width based on hashTupI of root:
+  float nodeWidth();
+
+  // returns max nodeWidth of tree rooted at this node
+  // if used before solve, undefined behaviour:
+  float joinwidth();
 
 };
 

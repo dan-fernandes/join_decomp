@@ -19,6 +19,7 @@
 #include "DetKDecomp.h"
 
 
+
 using std::string;
 using std::map;
 //using namespace XCSP3Core;
@@ -56,7 +57,9 @@ public:
   // In here rather than JoinBinaryNode to allow heuristic methods of bianrisation
   void binarise(JoinBinaryNode * root);
 
-  void buildJoinDecomp(JoinDecomp * jd);
+
+  JoinDecomp* convJBN(map<JoinBinaryNode*, CSPConstraint*> * q, JoinBinaryNode* jbn);
+  JoinDecomp* buildJoinDecomp();
 };
 
 

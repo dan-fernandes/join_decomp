@@ -1,6 +1,7 @@
 #include "JoinDecomp.h"
 
 
+
 void JoinDecomp::setRoot(JoinDecomp* root_){
   root = root_;
 }
@@ -30,6 +31,7 @@ void JoinDecomp::setVariables(vector<string> variables_){
 }
 
 void JoinDecomp::setTuples(vector<vector<int>> tuples_){
+  ogTupLen = tuples_.size();
   tuples = tuples_;
 }
 
@@ -289,4 +291,53 @@ void JoinDecomp::solve(){
   naiveJoin();
   proj();
   prune();
+}
+
+
+int JoinDecomp::hashTupI(){
+  // vector<pair<vector<string>, vector<vector<int>>>> fullConstraints = root->getBaseConstraints();
+  // int maxTups = 0;
+  // for(auto constr: fullConstraints){
+  //   // maxTups = std::max(maxTups, constr.second.size());
+  //   maxTups = maxTups*(maxTups>constr.second.size()) + constr.second.size()*(maxTups<=constr.second.size());
+  // }
+  int left = 0;
+  int right = 0;
+  int maxTups = ogTupLen;
+  if(childLeft != NULL){
+    left = childLeft->hashTupI();
+  }
+  if(childRight != NULL){
+    right = childRight->hashTupI();
+  }
+  if(left > maxTups){
+    maxTups = left;
+  }
+  if(right > maxTups){
+    maxTups = right;
+  }
+
+  return maxTups;
+}
+
+
+float JoinDecomp::nodeWidth(){
+  return log(tuples.size()) / log(root->hashTupI());
+}
+
+float JoinDecomp::joinwidth(){
+  int jw = nodeWidth();
+  if(childLeft != NULL){
+    int leftjw = childLeft->joinwidth();
+    if(leftjw > jw){
+      jw = leftjw;
+    }
+  }
+  if(childRight != NULL){
+    int rightjw = childRight->joinwidth();
+    if(rightjw > jw){
+      jw = rightjw;
+    }
+  }
+  return jw;
 }
