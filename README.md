@@ -11,7 +11,7 @@ Requirements:
 libxml2
 cmake >= 3.6
 c++11 compiler
-
+Cbc mixed integer programming solver
 
 
 Acknowledgements:
